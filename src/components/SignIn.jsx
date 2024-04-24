@@ -38,7 +38,7 @@ const validationSchema = yup.object().shape({
 
 const SignIn = () => {
     const onSubmit = values => {
-        console.log(values, formik);
+        console.log(values);
     }
 
     const formik = useFormik({
