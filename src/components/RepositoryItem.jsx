@@ -4,35 +4,36 @@ import {Image} from "react-native";
 import Text from "./Text";
 import theme from "../theme";
 
+const styles = StyleSheet.create({
+    repoItem: {
+        padding: 8,
+        backgroundColor: '#fff'
+    },
+    repoDetails: {
+        flexDirection: "row",
+        gap: 16
+    },
+    repoInfo: {
+        gap: 4,
+        flexWrap: 'wrap',
+        flex: 1,
+    },
+    language: {
+        backgroundColor: theme.colors.primary,
+        paddingVertical: 6,
+        paddingHorizontal: 8,
+        color: '#fff',
+        borderRadius: 4,
+        alignSelf: 'flex-start'
+    },
+    stats: {
+        flexDirection: "row",
+        justifyContent: "space-evenly",
+        marginTop: 12
+    }
+})
 function RepositoryItem(props) {
-    const styles = StyleSheet.create({
-        repoItem: {
-            padding: 8,
-            backgroundColor: '#fff'
-        },
-        repoDetails: {
-            flexDirection: "row",
-            gap: 16
-        },
-        repoInfo: {
-            gap: 4,
-            flexWrap: 'wrap',
-            flex: 1,
-        },
-        language: {
-            backgroundColor: theme.colors.primary,
-            paddingVertical: 6,
-            paddingHorizontal: 8,
-            color: '#fff',
-            borderRadius: 4,
-            alignSelf: 'flex-start'
-        },
-        stats: {
-            flexDirection: "row",
-            justifyContent: "space-evenly",
-            marginTop: 12
-        }
-    })
+
 
     function formatNumber(num) {
         if (num >= 1000) {
