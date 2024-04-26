@@ -5,6 +5,9 @@ import Text from "./Text";
 import theme from "../theme";
 import {Link} from "react-router-native";
 import {ScrollView} from "react-native";
+import {useApolloClient, useQuery} from "@apollo/client";
+import {ME} from "../graphql/queries";
+import useAuthStorage from "../hooks/useAuthStorage";
 
 const styles = StyleSheet.create({
     container: {
@@ -17,34 +20,36 @@ const styles = StyleSheet.create({
     appBar: {flexDirection: "row", gap: 8}
 });
 
-const onPress = () => {
-
-}
-
 const AppBar = () => {
+    const authStorage = useAuthStorage()
+    const apolloClient = useApolloClient()
+    const {data} = useQuery(ME, {
+        fetchPolicy: 'cache-and-network'
+    });
+
+    const signOut = async () => {
+        await authStorage.removeAccessToken();
+        apolloClient.resetStore();
+    }
+
     return (
         <View style={styles.container}>
-            <AppBarTab />
+            <ScrollView horizontal>
+                <View style={styles.appBar}>
+                    <AppBarTab to="/">Repositories</AppBarTab>
+                    {data?.me ?
+                        <AppBarTab handlePress={signOut}>Sign out</AppBarTab> :
+                        <AppBarTab to="/sign-in">Sign in</AppBarTab>}</View>
+            </ScrollView>
         </View>
     );
 };
 
-const AppBarTab = () => {
+const AppBarTab = ({children, to, handlePress}) => {
     return (
-        <>
-            <View>
-                <ScrollView horizontal>
-                    <View style={styles.appBar}>
-                        <Link to="/">
-                            <Text style={styles.text} fontWeight="bold" fontSize="subheading">Repositories</Text>
-                        </Link>
-                        <Link to="/sign-in">
-                            <Text style={styles.text} fontWeight="bold" fontSize="subheading">Sign in </Text>
-                        </Link>
-                    </View>
-                </ScrollView>
-            </View>
-        </>
+        <Link to={to} onPress={handlePress}>
+            <Text style={styles.text} fontWeight="bold" fontSize="subheading">{children}</Text>
+        </Link>
     )
 }
 

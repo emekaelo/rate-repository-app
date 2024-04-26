@@ -41,12 +41,10 @@ const SignIn = () => {
     const [signIn, result] = useSignIn();
 
     const onSubmit = values => {
-        console.log(values);
         const { username, password } = values;
 
         try {
-            const {data} = signIn({username, password})
-            console.log(data, result.data)
+            const data = signIn({username, password})
         } catch (error) {
             console.log(error)
         }
