@@ -1,9 +1,11 @@
 import React from 'react';
-import {StyleSheet, View} from "react-native";
+import {Pressable, StyleSheet, View} from "react-native";
 import {Image} from "react-native";
 import Text from "./Text";
 import theme from "../theme";
 import {formatInThousands} from "../utils/formatInThousands";
+import {useParams} from "react-router-native";
+import * as Linking from "expo-linking";
 
 const styles = StyleSheet.create({
     repoItem: {
@@ -30,11 +32,17 @@ const styles = StyleSheet.create({
     stats: {
         flexDirection: "row",
         justifyContent: "space-evenly",
-        marginTop: 12
+        marginTop: 12,
+        marginBottom: 12
+    },
+    githubBtn: {
+        alignSelf: "stretch",
+        textAlign: "center"
     }
 })
 
 function RepositoryItem(props) {
+    const {id} = useParams()
 
     return (
         <View style={styles.repoItem} testID="repositoryItem">
@@ -63,6 +71,11 @@ function RepositoryItem(props) {
                     <Text>Ratings</Text>
                 </View>
             </View>
+            {id && <Pressable onPress={() => {
+                Linking.openURL(props.url)
+            }}>
+                <Text style={{...styles.language,...styles.githubBtn}}>Open in GitHub</Text>
+            </Pressable>}
         </View>
     );
 }
