@@ -25,3 +25,13 @@ mutation CreateReview($review: CreateReviewInput) {
 }
 ${USER_BASE_FIELDS}
 `
+
+export const CREATE_USER = gql`
+mutation addNewUser($username: String!, $password: String!){
+  createUser(user: { username: $username, password: $password }) {
+    id
+    username
+    createdAt
+  }
+}
+`

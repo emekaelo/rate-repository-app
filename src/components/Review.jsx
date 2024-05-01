@@ -3,7 +3,7 @@ import * as yup from 'yup'
 import {Formik} from "formik";
 import {Pressable, StyleSheet, View} from "react-native";
 import FormikTextInput from "./FormikTextInput";
-import theme from "../theme";
+import theme, {style} from "../theme";
 import {useReview} from "../hooks/useReview";
 
 const initialValues = {
@@ -22,17 +22,8 @@ const validationSchema = yup.object().shape({
 })
 
 const styles = StyleSheet.create({
-    form: {
-        gap: 8,
-        margin: 8
-    },
-    button: {
-        backgroundColor: theme.colors.primary,
-        padding: 8,
-        borderRadius: 4,
-        color: '#fff',
-        textAlign: "center"
-    }
+    form: style.form,
+    button: style.button
 })
 
 export const ReviewContainer = ({onSubmit}) => {

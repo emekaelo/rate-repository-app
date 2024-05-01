@@ -2,28 +2,19 @@ import Text from './Text';
 import {Pressable, StyleSheet, View} from "react-native";
 import {TextInput} from "react-native";
 import {useFormik} from "formik";
-import theme from "../theme";
+import theme, {style} from "../theme";
 import * as yup from 'yup';
 import {useSignIn} from "../hooks/useSignIn";
 
 const styles = StyleSheet.create({
-    form: {
-        gap: 8,
-        margin: 8
-    },
+    form: style.form,
+    button: style.button,
     input: {
         borderWidth: 1,
         borderStyle: "solid",
         borderColor: theme.colors.appBar,
         borderRadius: 4,
         padding: 8
-    },
-    button: {
-        backgroundColor: theme.colors.primary,
-        padding: 8,
-        borderRadius: 4,
-        color: '#fff',
-        textAlign: "center"
     }
 })
 

@@ -25,4 +25,18 @@ const theme = {
     },
 };
 
+export const style = {
+    form: {
+        gap: 8,
+        margin: 8
+    },
+    button: {
+        backgroundColor: theme.colors.primary,
+        padding: 12,
+        borderRadius: 4,
+        color: '#fff',
+        textAlign: "center"
+    }
+}
+
 export default theme;

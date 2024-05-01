@@ -20,7 +20,7 @@ const FormikTextInput = ({style, ...props}) => {
 
     return (
         <>
-            <TextInput multiline={props.type === 'textarea'} style={{
+            <TextInput multiline={props.type === 'textarea'} secureTextEntry={props.type === 'password'} style={{
                 ...styles.input,
                 borderColor: meta.error ? theme.colors.danger : theme.colors.appBar,
                 ...style

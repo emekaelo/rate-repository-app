@@ -41,8 +41,14 @@ const AppBar = () => {
                         <>
                             <AppBarTab to="new-review">Create a review</AppBarTab>
                             <AppBarTab handlePress={signOut}>Sign out</AppBarTab>
-                        </> :
-                        <AppBarTab to="/sign-in">Sign in</AppBarTab>}</View>
+                        </>
+                        :
+                        <>
+                            <AppBarTab to="/sign-in">Sign in</AppBarTab>
+                            <AppBarTab to="/sign-up">Sign up</AppBarTab>
+                        </>
+                    }
+                </View>
             </ScrollView>
         </View>
     );
