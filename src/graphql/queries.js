@@ -62,6 +62,21 @@ query Repository($repositoryId: ID!) {
     ownerAvatarUrl
     description
     language
+    reviews {
+      edges {
+        node {
+          user {
+            id
+            username
+            createdAt
+          }
+          createdAt
+          id
+          rating
+          text
+        }
+      }
+    }
   }
 }
 `
