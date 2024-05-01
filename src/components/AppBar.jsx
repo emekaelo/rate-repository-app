@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
     text: {
         color: '#ffffff',
     },
-    appBar: {flexDirection: "row", gap: 8}
+    appBar: {flexDirection: "row", gap: 16}
 });
 
 const AppBar = () => {
@@ -38,7 +38,10 @@ const AppBar = () => {
                 <View style={styles.appBar}>
                     <AppBarTab to="/">Repositories</AppBarTab>
                     {data?.me ?
-                        <AppBarTab handlePress={signOut}>Sign out</AppBarTab> :
+                        <>
+                            <AppBarTab to="new-review">Create a review</AppBarTab>
+                            <AppBarTab handlePress={signOut}>Sign out</AppBarTab>
+                        </> :
                         <AppBarTab to="/sign-in">Sign in</AppBarTab>}</View>
             </ScrollView>
         </View>

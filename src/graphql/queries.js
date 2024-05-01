@@ -1,4 +1,5 @@
 import {gql} from "@apollo/client";
+import {REPOSITORY_BASE_FIELDS, USER_BASE_FIELDS} from "./fragments";
 
 export const GET_REPOSITORIES = gql`
 query {
@@ -13,62 +14,32 @@ query {
     edges {
       cursor
       node {
-        id
-        ownerName
-        name
-        createdAt
-        fullName
-        ratingAverage
-        reviewCount
-        stargazersCount
-        watchersCount
-        forksCount
-        openIssuesCount
-        url
-        ownerAvatarUrl
-        description
-        language
-        userHasReviewed
+        ...repositoryBaseFields
       }
     }
   }
 }
+${REPOSITORY_BASE_FIELDS}
 `
 
 export const ME = gql`
 query {
   me {
-    id
-    username
+    ...userBaseFields
   }
 }
+${USER_BASE_FIELDS}
 `
 
 export const GET_REPOSITORY = gql`
 query Repository($repositoryId: ID!) {
   repository(id: $repositoryId) {
-    id
-    ownerName
-    name
-    createdAt
-    fullName
-    ratingAverage
-    reviewCount
-    stargazersCount
-    watchersCount
-    forksCount
-    openIssuesCount
-    url
-    ownerAvatarUrl
-    description
-    language
+    ...repositoryBaseFields
     reviews {
       edges {
         node {
           user {
-            id
-            username
-            createdAt
+            ...userBaseFields
           }
           createdAt
           id
@@ -79,4 +50,6 @@ query Repository($repositoryId: ID!) {
     }
   }
 }
+${REPOSITORY_BASE_FIELDS}
+${USER_BASE_FIELDS}
 `
