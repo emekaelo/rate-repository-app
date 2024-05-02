@@ -2,6 +2,11 @@ import {FlatList, View, StyleSheet, Pressable} from 'react-native';
 import RepositoryItem from "./RepositoryItem";
 import useRepositories from "../hooks/useRepositories";
 import {useNavigate} from "react-router-native";
+import {Picker} from "@react-native-picker/picker";
+import {useState} from "react";
+import {useQuery} from "@apollo/client";
+import {GET_REPOSITORIES} from "../graphql/queries";
+import {log} from "expo/build/devtools/logger";
 
 const styles = StyleSheet.create({
     separator: {
@@ -55,14 +60,48 @@ const repositories = [
         ownerAvatarUrl: 'https://avatars3.githubusercontent.com/u/13142323?v=4',
     },
 ];
+const sortOptions = [
+    {label: 'Latest', value: 'latest'},
+    {label: 'Highest rated', value: 'highest'},
+    {label: 'Lowest rated', value: 'lowest'},
+]
+
+const SortPicker = ({setSortRule}) => {
+    const [selectedValue, setSelectedValue] = useState("latest")
+
+    const getSelectedSort = (selectedSort) => {
+        switch (selectedSort) {
+            case 'latest':
+                return {orderBy: "CREATED_AT", orderDirection: "DESC"}
+            case 'highest':
+                return {orderBy: "RATING_AVERAGE", orderDirection: "DESC"}
+            case 'lowest':
+                return {orderBy: "RATING_AVERAGE", orderDirection: "ASC"}
+        }
+    }
+
+    return (
+        <Picker
+            prompt="Select an item"
+            selectedValue={selectedValue}
+            onValueChange={(itemValue) => {
+                setSelectedValue(itemValue)
+                setSortRule(getSelectedSort(itemValue))
+            }
+            }>
+            {sortOptions.map((option) => (<Picker.Item key={option.value} label={`${option.label} repositories`} value={option.value} />))}
+        </Picker>
+    )
+}
 
 export const ItemSeparator = () => <View style={styles.separator} />;
 
-export const RepositoryListContainer = ({repositories}) => {
+export const RepositoryListContainer = ({repositories, children}) => {
     const navigate = useNavigate()
     const repositoryNodes = repositories
         ? repositories.edges.map(edge => edge.node)
         : [];
+
 
     return (
         <FlatList
@@ -78,14 +117,20 @@ export const RepositoryListContainer = ({repositories}) => {
                     </RepositoryItem>
                 </Pressable>
             )}
+            ListHeaderComponent={children}
         />
     );
 }
 
 const RepositoryList = () => {
-    const {repositories} = useRepositories()
+    const [sortRule, setSortRule] = useState({orderDirection: 'DESC', orderBy: 'CREATED_AT'});
+    const {repositories} = useRepositories(sortRule)
 
-    return <RepositoryListContainer repositories={repositories} />
+    return (
+        <RepositoryListContainer repositories={repositories}>
+            <SortPicker setSortRule={setSortRule} />
+        </RepositoryListContainer>
+    )
 };
 
 export default RepositoryList;
