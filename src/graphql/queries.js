@@ -23,9 +23,23 @@ ${REPOSITORY_BASE_FIELDS}
 `
 
 export const ME = gql`
-query {
+query Me($includeReviews: Boolean = false) {
   me {
     ...userBaseFields
+     reviews @include(if: $includeReviews) {
+      edges {
+        node {
+          rating
+          createdAt
+          text
+          id
+          repository {
+            id
+            fullName
+          }
+        }
+      }
+    }
   }
 }
 ${USER_BASE_FIELDS}

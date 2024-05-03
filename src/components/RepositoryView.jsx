@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
     }
 })
 
-const ReviewItem = ({review}) => {
+export const ReviewItem = ({review}) => {
 
     return (
         <View style={styles.review}>
@@ -34,7 +34,7 @@ const ReviewItem = ({review}) => {
                 <Text style={styles.rating}>{review.rating}</Text>
             </View>
             <View>
-                <Text fontSize="subheading" fontWeight="bold">{review.user.username}</Text>
+                <Text fontSize="subheading" fontWeight="bold">{review.repository ? review.repository.fullName : review.user.username}</Text>
                 <Text>{format(review.createdAt, "dd.MM.yyyy")}</Text>
                 <Text>{review.text}</Text>
             </View>
