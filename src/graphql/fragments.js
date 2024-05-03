@@ -28,3 +28,12 @@ export const USER_BASE_FIELDS = gql`
     createdAt
   }
 `;
+
+export const REVIEW_BASE_FIELDS = gql`
+  fragment reviewBaseFields on Review {
+    createdAt
+    id
+    rating
+    text
+  }
+`

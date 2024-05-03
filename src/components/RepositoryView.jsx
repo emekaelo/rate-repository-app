@@ -1,18 +1,22 @@
 import RepositoryItem from "./RepositoryItem";
-import {useParams} from "react-router-native";
+import {useNavigate, useParams} from "react-router-native";
 import {useRepository} from "../hooks/useRepository";
-import {FlatList, StyleSheet, View} from "react-native";
+import {Alert, FlatList, Pressable, StyleSheet, View} from "react-native";
 import {ItemSeparator} from "./RepositoryList";
 import Text from "./Text";
-import theme from "../theme";
+import theme, {style} from "../theme";
 import {format} from "date-fns";
+import {useDeleteReview} from "../hooks/useDeleteReview";
 
 const styles = StyleSheet.create({
+    wrapper: {
+        backgroundColor: "#fff",
+        padding: 16,
+        gap: 10
+    },
     review: {
         flexDirection: "row",
         gap: 8,
-        padding: 16,
-        backgroundColor: "#fff"
     },
     rating: {
         borderColor: theme.colors.primary,
@@ -23,20 +27,52 @@ const styles = StyleSheet.create({
         fontWeight: 700,
         borderRadius: 20,
         padding: 11,
-    }
+    },
+    button: style.button
 })
 
 export const ReviewItem = ({review}) => {
+    const navigate = useNavigate();
+    const [removeReview, result] = useDeleteReview()
+
+    const createTwoButtonAlert = () => {
+
+        Alert.alert('Delete review', 'Are you sure you want to delete this review', [
+            {
+                text: 'Cancel',
+                onPress: () => console.log('Cancel Pressed'),
+                style: 'cancel',
+            },
+            {
+                text: 'Delete', onPress: () => {
+                    removeReview(review.id)
+                }
+            },
+        ]);
+    }
 
     return (
-        <View style={styles.review}>
-            <View>
-                <Text style={styles.rating}>{review.rating}</Text>
+        <View style={styles.wrapper}>
+            <View style={styles.review}>
+                <View>
+                    <Text style={styles.rating}>{review.rating}</Text>
+                </View>
+                <View>
+                    <Text fontSize="subheading"
+                          fontWeight="bold">{review.repository ? review.repository.fullName : review.user.username}</Text>
+                    <Text>{format(review.createdAt, "dd.MM.yyyy")}</Text>
+                    <Text>{review.text}</Text>
+                </View>
             </View>
             <View>
-                <Text fontSize="subheading" fontWeight="bold">{review.repository ? review.repository.fullName : review.user.username}</Text>
-                <Text>{format(review.createdAt, "dd.MM.yyyy")}</Text>
-                <Text>{review.text}</Text>
+                {review.repository &&
+                    <View style={{flexDirection: "row", gap: 16}}>
+                        <Pressable style={{flex: 1}} onPress={() => navigate(`/${review.repository.id}`)}>
+                            <Text style={styles.button}>View repository</Text>
+                        </Pressable><Pressable style={{flex: 1}} onPress={createTwoButtonAlert}>
+                        <Text style={{...styles.button, backgroundColor: theme.colors.danger}}>Delete review</Text>
+                    </Pressable>
+                    </View>}
             </View>
         </View>
     )
