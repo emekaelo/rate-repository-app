@@ -1,17 +1,23 @@
-import {FlatList, View, StyleSheet, Pressable} from 'react-native';
+import {FlatList, View, StyleSheet, Pressable, TextInput} from 'react-native';
 import RepositoryItem from "./RepositoryItem";
 import useRepositories from "../hooks/useRepositories";
 import {useNavigate} from "react-router-native";
 import {Picker} from "@react-native-picker/picker";
-import {useState} from "react";
-import {useQuery} from "@apollo/client";
-import {GET_REPOSITORIES} from "../graphql/queries";
-import {log} from "expo/build/devtools/logger";
+import {useEffect, useState} from "react";
+import {useDebounce} from "use-debounce";
 
 const styles = StyleSheet.create({
     separator: {
         height: 10,
     },
+    searchInput: {
+        paddingHorizontal: 12,
+        paddingVertical: 10,
+        margin: 12,
+        backgroundColor: "#fff",
+        elevation: 5,
+        borderRadius: 4
+    }
 });
 
 const repositories = [
@@ -86,10 +92,11 @@ const SortPicker = ({setSortRule}) => {
             selectedValue={selectedValue}
             onValueChange={(itemValue) => {
                 setSelectedValue(itemValue)
-                setSortRule(getSelectedSort(itemValue))
+                setSortRule(prevValue => ({...prevValue, ...getSelectedSort(itemValue)}))
             }
             }>
-            {sortOptions.map((option) => (<Picker.Item key={option.value} label={`${option.label} repositories`} value={option.value} />))}
+            {sortOptions.map((option) => (
+                <Picker.Item key={option.value} label={`${option.label} repositories`} value={option.value} />))}
         </Picker>
     )
 }
@@ -123,12 +130,21 @@ export const RepositoryListContainer = ({repositories, children}) => {
 }
 
 const RepositoryList = () => {
-    const [sortRule, setSortRule] = useState({orderDirection: 'DESC', orderBy: 'CREATED_AT'});
-    const {repositories} = useRepositories(sortRule)
+    const [filterText, setFilterText] = useState("")
+    const [searchKeyword] = useDebounce(filterText, 500);
+    const [sortRule, setSortRule] = useState({orderDirection: 'DESC', orderBy: 'CREATED_AT', searchKeyword});
+    const {repositories} = useRepositories(sortRule);
+
+    useEffect(() => {
+        setSortRule(prevState => ({...prevState, searchKeyword}))
+    }, [searchKeyword]);
 
     return (
         <RepositoryListContainer repositories={repositories}>
-            <SortPicker setSortRule={setSortRule} />
+            <>
+                <TextInput style={styles.searchInput} placeholder="Filter repositories" value={filterText} onChangeText={(text) => setFilterText(text)} />
+                <SortPicker setSortRule={setSortRule} />
+            </>
         </RepositoryListContainer>
     )
 };
