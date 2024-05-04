@@ -103,7 +103,7 @@ const SortPicker = ({setSortRule}) => {
 
 export const ItemSeparator = () => <View style={styles.separator} />;
 
-export const RepositoryListContainer = ({repositories, children}) => {
+export const RepositoryListContainer = ({repositories, children, onEndReached}) => {
     const navigate = useNavigate()
     const repositoryNodes = repositories
         ? repositories.edges.map(edge => edge.node)
@@ -125,6 +125,8 @@ export const RepositoryListContainer = ({repositories, children}) => {
                 </Pressable>
             )}
             ListHeaderComponent={children}
+            onEndReached={onEndReached}
+            onEndReachedThreshold={0.5}
         />
     );
 }
@@ -133,16 +135,20 @@ const RepositoryList = () => {
     const [filterText, setFilterText] = useState("")
     const [searchKeyword] = useDebounce(filterText, 500);
     const [sortRule, setSortRule] = useState({orderDirection: 'DESC', orderBy: 'CREATED_AT', searchKeyword});
-    const {repositories} = useRepositories(sortRule);
+    const {repositories, fetchMore} = useRepositories({...sortRule, first: 5});
 
     useEffect(() => {
         setSortRule(prevState => ({...prevState, searchKeyword}))
     }, [searchKeyword]);
 
+    const onEndReached = () => {
+        fetchMore();
+    }
+
     return (
-        <RepositoryListContainer repositories={repositories}>
+        <RepositoryListContainer repositories={repositories} onEndReached={onEndReached}>
             <>
-                <TextInput style={styles.searchInput} placeholder="Filter repositories" value={filterText} onChangeText={(text) => setFilterText(text)} />
+                <TextInput style={styles.searchInput} placeholder="Filter repositories" value={filterText} onChangeText={setFilterText} />
                 <SortPicker setSortRule={setSortRule} />
             </>
         </RepositoryListContainer>

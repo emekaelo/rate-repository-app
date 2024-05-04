@@ -2,11 +2,11 @@ import { useState, useEffect } from 'react';
 import {useQuery} from "@apollo/client";
 import {GET_REPOSITORIES} from "../graphql/queries";
 
-const useRepositories = (sortRule) => {
+const useRepositories = (variables) => {
     // GraphQL approach
-    const {data, error, loading, refetch} = useQuery(GET_REPOSITORIES, {
+    const {data, error, loading, refetch, fetchMore} = useQuery(GET_REPOSITORIES, {
         fetchPolicy: 'cache-and-network',
-        variables: sortRule
+        variables
     })
 
     // Rest api approach
@@ -28,7 +28,22 @@ const useRepositories = (sortRule) => {
     //     fetchRepositories();
     // }, []);
 
-    return { repositories: data?.repositories, loading, refetch, error };
+    const handleFetchMore = () => {
+        const canFetchMore = !loading && data?.repositories.pageInfo.hasNextPage;
+
+        if (!canFetchMore) {
+            return;
+        }
+
+        fetchMore({
+            variables: {
+                after: data?.repositories.pageInfo.endCursor,
+                ...variables,
+            }
+        })
+    }
+
+    return { repositories: data?.repositories, loading, refetch, error, fetchMore: handleFetchMore };
 };
 
 export default useRepositories;

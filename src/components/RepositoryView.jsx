@@ -19,14 +19,19 @@ const styles = StyleSheet.create({
         gap: 8,
     },
     rating: {
-        borderColor: theme.colors.primary,
-        borderWidth: 2,
-        width: 40,
-        height: 40,
-        fontSize: 16,
-        fontWeight: 700,
-        borderRadius: 20,
-        padding: 11,
+        wrapper: {
+            borderColor: theme.colors.primary,
+            borderWidth: 2,
+            width: 40,
+            height: 40,
+            borderRadius: 20,
+            justifyContent: 'center',
+            alignItems: 'center'
+        },
+        text: {
+            fontSize: 16,
+            fontWeight: 700,
+        }
     },
     button: style.button
 })
@@ -54,8 +59,8 @@ export const ReviewItem = ({review}) => {
     return (
         <View style={styles.wrapper}>
             <View style={styles.review}>
-                <View>
-                    <Text style={styles.rating}>{review.rating}</Text>
+                <View style={styles.rating.wrapper}>
+                    <Text style={styles.rating.text}>{review.rating}</Text>
                 </View>
                 <View>
                     <Text fontSize="subheading"
@@ -80,12 +85,17 @@ export const ReviewItem = ({review}) => {
 
 export const RepositoryView = () => {
     const {id} = useParams();
-    const {repository} = useRepository(id);
+    const {repository, fetchMore} = useRepository({repositoryId: id, first: 5});
+
 
     const reviews = repository?.reviews
     const reviewNodes = reviews
         ? reviews.edges.map(edge => edge.node)
         : [];
+
+    const onEndReached = () => {
+        fetchMore();
+    }
 
     return (
         <FlatList
@@ -96,6 +106,8 @@ export const RepositoryView = () => {
             ListHeaderComponent={() =>
                 <RepositoryItem {...repository} />}
             ListHeaderComponentStyle={{marginBottom: 10}}
+            onEndReached={onEndReached}
+            onEndReachedThreshold={0.1}
         />
     );
 };
